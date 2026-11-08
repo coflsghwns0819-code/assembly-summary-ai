@@ -1,0 +1,13 @@
+[theme]
+base="light"
+# 버튼 및 강조 색상 (근엄하고 신뢰감 있는 딥 네이비)
+primaryColor="#162B4C" 
+
+# 메인 최상단(주간 국회 일정 브리핑) 배경색 (깨끗한 화이트)
+backgroundColor="#FFFFFF" 
+
+# 사이드바 배경색 (눈이 편안하고 차분한 블루그레이)
+secondaryBackgroundColor="#E8EEF5" 
+
+# 전체 글자 색상 (피로도가 낮은 다크 차콜)
+textColor="#2D3748"
