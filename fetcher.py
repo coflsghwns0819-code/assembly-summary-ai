@@ -1,7 +1,9 @@
 """fetcher.py - 열린국회정보 '국회일정(ALLSCHEDULE)' 수집 + 정제 모듈"""
 import html
+import json
 import os
 import re
+from datetime import datetime
 
 import requests
 
@@ -146,14 +148,40 @@ def get_schedules(start_date=None, end_date=None, kind=None, committee=None,
 
 
 # ---------------- 단독 테스트
+# ---------------------------------------------------------------- 6. JSON 저장
+OUTPUT_DIR = "output"  # 결과 파일을 모아둘 폴더
+
+
+def make_filename(prefix="schedules", output_dir=OUTPUT_DIR):
+    """만든 순서(번호) + 시간(날짜_시각)이 들어간 파일 이름을 만든다.
+    예: output/schedules_001_20261111_153045.json
+    """
+    os.makedirs(output_dir, exist_ok=True)
+
+    pattern = re.compile(rf"^{re.escape(prefix)}_(\d+)_")
+    numbers = []
+    for name in os.listdir(output_dir):
+        m = pattern.match(name)
+        if m:
+            numbers.append(int(m.group(1)))
+    next_no = max(numbers, default=0) + 1
+
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    return os.path.join(output_dir, f"{prefix}_{next_no:03d}_{stamp}.json")
+
+
+def save_json(items, prefix="schedules", output_dir=OUTPUT_DIR):
+    """정제된 일정 리스트를 새 JSON 파일로 저장하고, 저장한 경로를 반환."""
+    path = make_filename(prefix, output_dir)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(items, f, ensure_ascii=False, indent=2)
+    return path
+
+
+# ---------------------------------------------------------------- 단독 테스트
 if __name__ == "__main__":
     result = get_schedules(max_pages=1)
-    print("ok:", result["ok"], "| error:", result["error"], "| 건수:", len(result["items"]))
-    for item in result["items"][:3]:
-        print("-" * 40)
-        print(item["text"])
-#     result = get_schedules(start_date="2026-11-20", end_date="2026-11-30", kind="위원회")
-# print("건수:", len(result["items"]), "| error:", result["error"])
-# for item in result["items"][:3]:
-#     print(item["text"])
-#     print("-" * 20)
+    print("ok:", ...)
+    if result["ok"] and result["items"]:
+        saved = save_json(result["items"])
+        print("저장 완료:", saved)
