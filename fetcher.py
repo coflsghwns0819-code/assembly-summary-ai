@@ -3,6 +3,7 @@ import html
 import json
 import os
 import re
+from pathlib import Path
 from datetime import datetime
 
 import requests
@@ -149,8 +150,8 @@ def get_schedules(start_date=None, end_date=None, kind=None, committee=None,
 
 # ---------------- 단독 테스트
 # ---------------------------------------------------------------- 6. JSON 저장
-OUTPUT_DIR = "output"  # 결과 파일을 모아둘 폴더
-
+BASE_DIR = Path(__file__).resolve().parent
+OUTPUT_DIR = BASE_DIR / "output"
 
 def make_filename(prefix="schedules", output_dir=OUTPUT_DIR):
     """만든 순서(번호) + 시간(날짜_시각)이 들어간 파일 이름을 만든다.
